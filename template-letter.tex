@@ -1,4 +1,4 @@
-\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{letter}
 $if(fontfamily)$
 \usepackage{$fontfamily$}
 $else$
@@ -42,10 +42,7 @@ $endif$
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 % use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
 $if(geometry)$
 \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
@@ -131,16 +128,24 @@ $if(lang)$
 \fi
 $endif$
 
-$if(title)$
-\title{$title$$if(subtitle)$\\\vspace{0.5em}{\large $subtitle$}$endif$}
-$endif$
+
 $if(author)$
-\author{$for(author)$$author$$sep$ \and $endfor$}
+$if(fromsig)$
+% DONT set \signature
+$else$
+% DO set \signature
+\signature{$author$}
 $endif$
+$endif$
+
+$if(date)$
 \date{$date$}
+$endif$
+
 $for(header-includes)$
 $header-includes$
 $endfor$
+\address{$for(return-address)$$return-address$ \\$endfor$}
 
 % blockquote
 $if(blockquote)$
@@ -153,16 +158,7 @@ $if(blockquote)$
 \item\relax\color{greytext}\ignorespaces}{\unskip\unskip\endlist\end{blockquote}}
 $endif$
 
-
 \begin{document}
-$if(title)$
-\maketitle
-$endif$
-$if(abstract)$
-\begin{abstract}
-$abstract$
-\end{abstract}
-$endif$
 
 $for(include-before)$
 $include-before$
@@ -175,13 +171,33 @@ $if(toc)$
 \tableofcontents
 }
 $endif$
-$if(lot)$
-\listoftables
+
+\begin{letter}{$for(address)$$address$ \\$endfor$}
+
+$if(opening)$
+\opening{$opening$}
 $endif$
-$if(lof)$
-\listoffigures
-$endif$
+
 $body$
+
+$if(closing)$
+$if(fromsig)$
+% Move signature and close to the left
+\longindentation=0pt
+
+\closing{$closing$\\
+\vspace{12pt}
+\fromsig{\includegraphics[height=36pt]{$fromsig$}} \\
+\fromname{$author$}
+}
+$else$
+% Move signature and close to the left
+\longindentation=0pt
+\closing{$closing$}
+$endif$
+$endif$
+
+\end{letter}
 
 $if(natbib)$
 $if(biblio-files)$

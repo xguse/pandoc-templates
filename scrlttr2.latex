@@ -1,4 +1,4 @@
-\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{scrlttr2}
 $if(fontfamily)$
 \usepackage{$fontfamily$}
 $else$
@@ -42,22 +42,9 @@ $endif$
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 % use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
 $if(geometry)$
 \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
-$endif$
-$if(natbib)$
-\usepackage{natbib}
-\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
-$endif$
-$if(biblatex)$
-\usepackage{biblatex}
-$if(biblio-files)$
-\bibliography{$biblio-files$}
-$endif$
 $endif$
 $if(listings)$
 \usepackage{listings}
@@ -132,76 +119,94 @@ $if(lang)$
 $endif$
 
 $if(title)$
-\title{$title$$if(subtitle)$\\\vspace{0.5em}{\large $subtitle$}$endif$}
+\title{$title$}
+$endif$
+$if(subtitle)$
+\subtitle{$subtitle$}
 $endif$
 $if(author)$
 \author{$for(author)$$author$$sep$ \and $endfor$}
 $endif$
+$if(date)$
 \date{$date$}
+$endif$
 $for(header-includes)$
 $header-includes$
 $endfor$
 
-% blockquote
-$if(blockquote)$
-\usepackage{xcolor}
-\definecolor{greyborder}{RGB}{221,221,221}
-\definecolor{greytext}{RGB}{119,119,119}
-\usepackage{mdframed}
-\newmdenv[rightline=false,bottomline=false,topline=false,linewidth=3pt,linecolor=greyborder,skipabove=\parskip]{blockquote}
-\renewenvironment{quote}{\begin{blockquote}\list{}{\rightmargin=0em\leftmargin=0em}%
-\item\relax\color{greytext}\ignorespaces}{\unskip\unskip\endlist\end{blockquote}}
-$endif$
+\newkomavar{opening}
+\newkomavar{closing}
 
+$for(letteroption)$
+\LoadLetterOption{$letteroption$}
+$endfor$
+
+$if(addresseeimage)$\setkomavar{addresseeimage}{$addresseeimage$}$endif$
+$if(backaddress)$\setkomavar{backaddress}{$backaddress$}\KOMAoptions{backaddress=true}$endif$
+$if(customer)$\setkomavar{customer}{$customer$}$endif$
+$if(date)$\setkomavar{date}{$date$}$endif$
+$if(fromaddress)$
+\setkomavar{fromaddress}{%
+$for(fromaddress)$
+$fromaddress$$sep$\\
+$endfor$}
+$endif$
+$if(frombank)$\setkomavar{frombank}{$frombank$}$endif$
+$if(fromemail)$\setkomavar{fromemail}{$fromemail$}\KOMAoptions{fromemail=true}$endif$
+$if(fromfax)$\setkomavar{fromfax}{$fromfax$}\KOMAoptions{fromfax=true}$endif$
+$if(fromlogo)$\setkomavar{fromlogo}{$fromlogo$}\KOMAoptions{fromlogo=true}$endif$
+$if(frommobilephone)$\setkomavar{frommobilephone}{$frommobilephone$}\KOMAoptions{frommobilephone=true}$endif$
+$if(fromname)$\setkomavar{fromname}{$fromname$}$endif$
+$if(fromphone)$\setkomavar{fromphone}{$fromphone$}\KOMAoptions{fromphone=true}$endif$
+$if(fromurl)$\setkomavar{fromurl}{$fromurl$}\KOMAoptions{fromurl=true}$endif$
+$if(fromzipcode)$\setkomavar{fromzipcode}{$fromzipcode$}$endif$
+$if(invoice)$\setkomavar{invoice}{$invoice$}$endif$
+$if(location)$\setkomavar{location}{$location$}$endif$
+$if(myref)$\setkomavar{myref}{$myref$}$endif$
+$if(place)$\setkomavar{place}{$place$}$endif$
+$if(PPdatamatrix)$\setkomavar{PPdatamatrix}{$PPdatamatrix$}$endif$
+$if(PPcode)$\setkomavar{PPcode}{$PPcode$}$endif$
+$if(signature)$\setkomavar{signature}{$signature$}$endif$
+$if(specialmail)$\setkomavar{specialmail}{$specialmail$}$endif$
+$if(subject)$\setkomavar{subject}{$subject$}$endif$
+$if(title)$\setkomavar{title}{$title$}$endif$
+$if(toaddress)$\setkomavar{toaddress}{$toaddress$}\KOMAoptions{toaddress=true}$endif$
+$if(toname)$\setkomavar{toname}{$toname$}\KOMAoptions{toname=true}$endif$
+$if(yourmail)$\setkomavar{yourmail}{$yourmail$}$endif$
+$if(yourref)$\setkomavar{yourref}{$yourref$}$endif$
+$if(opening)$\setkomavar{opening}{$opening$}$endif$
+$if(closing)$\setkomavar{closing}{$closing$}$endif$
+
+
+\KOMAoptions{
+fromalign=right
+}
 
 \begin{document}
-$if(title)$
-\maketitle
-$endif$
-$if(abstract)$
-\begin{abstract}
-$abstract$
-\end{abstract}
-$endif$
+
+\begin{letter}{%
+$for(to)$
+$to$\\
+$endfor$
+}
 
 $for(include-before)$
 $include-before$
 
 $endfor$
-$if(toc)$
-{
-\hypersetup{linkcolor=black}
-\setcounter{tocdepth}{$toc-depth$}
-\tableofcontents
-}
-$endif$
-$if(lot)$
-\listoftables
-$endif$
-$if(lof)$
-\listoffigures
-$endif$
+
+\opening{\usekomavar{opening}}
+
 $body$
 
-$if(natbib)$
-$if(biblio-files)$
-$if(biblio-title)$
-$if(book-class)$
-\renewcommand\bibname{$biblio-title$}
-$else$
-\renewcommand\refname{$biblio-title$}
-$endif$
-$endif$
-\bibliography{$biblio-files$}
+\closing{\usekomavar{closing}}
 
-$endif$
-$endif$
-$if(biblatex)$
-\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+$if(ps)$\ps{$ps$}$endif$
 
-$endif$
 $for(include-after)$
 $include-after$
 
 $endfor$
+
+\end{letter}
 \end{document}
